@@ -12,8 +12,8 @@ export default class LoadingMenu extends BlankMenu {
   render(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
-    ctx.font = '60px Orbitron';
+    ctx.font = '60px Number';
     if(this.logoReady) ctx.drawImage(this.logo,800-400,600-200,800,400)
-    ctx.fillText(`Loading${(".".repeat(((Date.now() / 250) % 3)+1))}`, 800,900)
+    ctx.fillText("Loading", 800,900)
   }
 }
