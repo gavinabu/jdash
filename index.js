@@ -11,6 +11,7 @@ export const DEV = fs.existsSync(path.resolve("./DEV"));
 async function start() {
   const win = new BrowserWindow({
     frame: false,
+    kiosk: !DEV,
     width: 1600 / (DEV + 1), // javascript in a nutshell *using a boolean as a number*
     height: 1200 / (DEV + 1),
     webPreferences: {
