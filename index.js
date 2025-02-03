@@ -1,15 +1,18 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
+import fs from 'node:fs';
 import started from 'electron-squirrel-startup';
 import {createServer} from "vite";
 
 if (started) app.quit();
 
+export const DEV = fs.existsSync(path.resolve("./DEV"));
+
 async function start() {
   const win = new BrowserWindow({
-    // frame: false,
-    width: 800,
-    height: 600,
+    frame: false,
+    width: 1600 / (DEV + 1), // javascript in a nutshell *using a boolean as a number*
+    height: 1200 / (DEV + 1),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -25,6 +28,9 @@ async function start() {
     root: path.resolve('./src'),
     server: {
       port: 3000
+    },
+    define: {
+      DEV
     }
   })).listen(3000);
   await win.loadURL(`http://localhost:3000`);
