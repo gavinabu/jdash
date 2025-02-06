@@ -3,7 +3,8 @@
   "productName": "jhead",
   "version": "1.0.0",
   "scripts": {
-    "start": "vite dev"
+    "start": "vite dev",
+    "start:server": "node server.js"
   },
   "devDependencies": {
     "vite": "^6.0.11",
