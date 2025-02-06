@@ -1,8 +1,0 @@
-{
-  "spotify": {
-    "client": "4c0bed56e9b942a0bbaafd29e94b6d33",
-    "secret": "b0a82b04c1da4cabb073625f5df20378"
-  },
-  "host": "127.0.0.1",
-  "dev": false
-}
