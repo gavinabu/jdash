@@ -91,5 +91,4 @@ typings/
 # Electron-Forge
 out/
 
-
-DEV
+config.json

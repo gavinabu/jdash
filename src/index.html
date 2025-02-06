@@ -23,16 +23,27 @@
       font-family: 'Orbitron';
       src: url('media/fonts/Orbitron.ttf');
     }
-    body {
-      background-color: black;
-    }
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
+    html, body {
+      margin: 0;
+      padding: 0;
       width: 100vw;
       height: 100vh;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
+
+    canvas {
+      aspect-ratio: 4 / 3;
+      width: 100vw;
+      height: 75vw;
+      max-height: 100vh;
+      max-width: 133.33vh;
+      background: black;
+    }
+
   </style>
 </head>
 <body>

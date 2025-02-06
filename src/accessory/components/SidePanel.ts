@@ -1,11 +1,12 @@
-import ComputerBridge from "../../constant/ComputerBridge";
+import ComputerBridge, {DashLight} from "../../constant/ComputerBridge";
 import {getColor} from "../Color";
+import {drawText} from "../renderer/TextRenderer";
 
 const metricDistanceConvert = 3.6;
 const imperialDistanceConvert = 2.23694;
 
 const icons = new Map<string, [boolean, HTMLImageElement]>()
-function generateIcon(name: string,url: string, edit?: (ele: HTMLImageElement) => void) {
+function generateIcon(name: DashLight | string,url: string, edit?: (ele: HTMLImageElement) => void) {
   let ele = document.createElement("img");
   ele.src = url;
   if(edit) edit(ele)
@@ -15,83 +16,54 @@ function generateIcon(name: string,url: string, edit?: (ele: HTMLImageElement) =
   }
 }
 
-generateIcon("leftSignal", "./media/dashLights/Left Turn Signal Off.svg")
-generateIcon("leftSignalOn", "./media/dashLights/Left Turn Signal.svg")
-generateIcon("rightSignal", "./media/dashLights/Right Turn Signal Off.svg")
-generateIcon("rightSignalOn", "./media/dashLights/Right Turn Signal.svg")
-generateIcon("noCar", "./media/dashLights/No Car Connection.svg")
-generateIcon("revLimit", "./media/dashLights/Rev Limit.svg")
-generateIcon("tc", "./media/dashLights/TC.svg")
-generateIcon("abs", "./media/dashLights/ABS.svg")
-generateIcon("handbrake", "./media/dashLights/Handbrake.svg")
-generateIcon("checkEngine", "./media/dashLights/Check Engine.svg")
-generateIcon("battery", "./media/dashLights/Battery.svg")
-generateIcon("fuel", "./media/dashLights/Low Fuel.svg")
-
-function drawText(ctx: CanvasRenderingContext2D,text:string,x: number,y: number,fontSize: number,font: string,color: string,align?: ["left"|"center"|"right","top"|"center"|"bottom"], bold?: boolean) {
-  ctx.font = `${bold ? 'bold ' : ''}${fontSize}px ${font}`;
-  ctx.fillStyle = color;
-  switch((align || [])[1]) {
-    case "center": {
-      ctx.textBaseline = "middle"
-      break;
-    }
-    case "top": {
-      ctx.textBaseline = "top"
-      break
-    }
-    case "bottom": {
-      ctx.textBaseline = "bottom"
-      break;
-    }
-  }
-  let m = ctx.measureText(text);
-  let newX = x
-  switch((align || [])[0]) {
-    case "center": {
-      ctx.textBaseline = "middle"
-      ctx.textAlign = "center"
-      break;
-    }
-    case "left": {
-      newX += m.width / 2
-      break
-    }
-    case "right": {
-      newX -= m.width / 2
-      break;
-    }
-  }
-  ctx.fillText(text,newX,y)
-}
+generateIcon("LeftTurnSignal", "./media/dashLights/Left Turn Signal.svg")
+generateIcon("RightTurnSignal", "./media/dashLights/Right Turn Signal.svg")
+generateIcon("LeftTurnSignalOff", "./media/dashLights/Left Turn Signal Off.svg")
+generateIcon("RightTurnSignalOff", "./media/dashLights/Right Turn Signal Off.svg")
+generateIcon("NoCarConnection", "./media/dashLights/No Car Connection.svg")
+generateIcon("RevLimit", "./media/dashLights/Rev Limit.svg")
+generateIcon("TractionControl", "./media/dashLights/TC.svg")
+generateIcon("ABS", "./media/dashLights/ABS.svg")
+generateIcon("Handbrake", "./media/dashLights/Handbrake.svg")
+generateIcon("CheckEngine", "./media/dashLights/Check Engine.svg")
+generateIcon("Battery", "./media/dashLights/Battery.svg")
+generateIcon("LowFuel", "./media/dashLights/Low Fuel.svg")
+generateIcon("HighBeam", "./media/dashLights/High Beam.svg")
+generateIcon("LowBeam", "./media/dashLights/Low Beam.svg")
 
 export default function sidePanel(ctx:CanvasRenderingContext2D, x: number, y: number) {
-  let engineData = ComputerBridge.instance.getEngineData();
-  let dashLights = ComputerBridge.instance.getDashLights();
+  let engineData = ComputerBridge.getEngineData();
+  let dashLights = ComputerBridge.getDashLights();
   let metricDistance = localStorage.getItem("unit.metricDistance") === "true"
-  ctx.fillStyle = getColor("BG");
-  ctx.fillRect(x,y,500,1200);
+  ctx.fillStyle = "rgba(0,0,0,0.1)";
+  ctx.fillRect(x,y,500,1050);
   ctx.fillStyle = "rgba(0,0,0,0.1)";
   ctx.fillRect(x,y,500,100);
   ctx.fillStyle = "rgba(0,0,0,0.15)";
   ctx.fillRect(x,y + 100,500,150);
-  drawText(ctx,(engineData.wheelSpeed * (metricDistance ? metricDistanceConvert : imperialDistanceConvert)).toFixed(0),250,100+(88/2)+14,70,"Orbitron",getColor("FG"),["center","center"])
-  drawText(ctx,metricDistance ? "kmh" : 'mph',250,100+(50/2)+85,40,"Orbitron",getColor("FG"),["center","center"],true)
+  drawText(ctx,(engineData.wheelSpeed * (metricDistance ? metricDistanceConvert : imperialDistanceConvert)).toFixed(0),x+250,y+100+(88/2)+14,70,"Orbitron",getColor("FG"),["center","center"])
+  drawText(ctx,metricDistance ? "kmh" : 'mph',x+250,y+100+(50/2)+85,40,"Orbitron",getColor("FG"),["center","center"],true)
   let now = new Date(Date.now());
-  drawText(ctx,now.toLocaleTimeString(undefined,{hour12:true}),250,50,40,"Orbitron",getColor("FG"),["center","center"],true)
-  drawText(ctx,`${engineData.transmissionSpeed.toFixed(0).padStart(4,"0")} rpm`,250,270,20,"Orbitron",getColor("FG"),["center","center"],true)
-  ctx.drawImage(icons.get(`leftSignal${dashLights.includes("LeftTurnSignal") ? "On" : ""}`)![1],18,18)
-  ctx.drawImage(icons.get(`rightSignal${dashLights.includes("RightTurnSignal") ? "On" : ""}`)![1],418,18)
-  ctx.drawImage(icons.get(`rightSignal${dashLights.includes("RightTurnSignal") ? "On" : ""}`)![1],418,18)
+  drawText(ctx,now.toLocaleTimeString(undefined,{hour12:true}),x+250,y+ 50,40,"Orbitron",getColor("FG"),["center","center"],true)
+  drawText(ctx,`${engineData.transmissionSpeed.toFixed(0).padStart(4,"0")} rpm`,x+250,y+270,20,"Orbitron",getColor("FG"),["center","center"],true)
   
-  if(dashLights.includes("ABS")) ctx.drawImage(icons.get("abs")![1],11,100+11);
-  if(dashLights.includes("Handbrake")) ctx.drawImage(icons.get("handbrake")![1],75,100+11);
-  if(dashLights.includes("RevLimit")) ctx.drawImage(icons.get("revLimit")![1],11,100+75);
-  if(dashLights.includes("TractionControl")) ctx.drawImage(icons.get("tc")![1],75,100+75);
+  function ifLightDrawLight(name: DashLight, x:number, y:number, sx: number, sy:number) {
+    if(dashLights.includes(name)) ctx.drawImage(icons.get(name)![1],x+sx,y+sy)
+  }
   
-  if(dashLights.includes("NoCarConnection")) ctx.drawImage(icons.get("noCar")![1],362,100+11);
-  if(dashLights.includes("CheckEngine")) ctx.drawImage(icons.get("checkEngine")![1],426,100+11);
-  if(dashLights.includes("LowFuel")) ctx.drawImage(icons.get("fuel")![1],362,100+75);
-  if(dashLights.includes("Battery")) ctx.drawImage(icons.get("battery")![1],426,100+75);
+  ifLightDrawLight("LeftTurnSignal",x,y,18,18)
+  ifLightDrawLight("RightTurnSignal",x,y,418,18)
+  ifLightDrawLight("ABS",x,y+111,0,0);
+  ifLightDrawLight("Handbrake",x,y+111,64,0);
+  ifLightDrawLight("RevLimit",x,y+111,64,64);
+  ifLightDrawLight("TractionControl",x,y+111,0,64);
+  ifLightDrawLight("HighBeam",x,y+111,128,64);
+  
+  ifLightDrawLight("NoCarConnection",x+308,y+111,64,0);
+  ifLightDrawLight("CheckEngine",x+308,y+111,128,0);
+  ifLightDrawLight("LowBeam",x+308,y+111,0,64);
+  ifLightDrawLight("LowFuel",x+308,y+111,64,64);
+  ifLightDrawLight("Battery",x+308,y+111,128,64);
+  
   
 }
